@@ -15,5 +15,6 @@ int main()
 {
 
 	Tree tree1("+ 1 sin x");
+	print(tree1.print());
 
 }

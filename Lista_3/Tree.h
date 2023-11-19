@@ -92,6 +92,8 @@ public:
 	Tree operator+(const Tree& toAdd) const;
 
 	string print() const;
+	vector<Value*>* getVariables();
+	Error* getErrors();
 
 private:
 	Node* root;
