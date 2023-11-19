@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "ConstValues.h"
 
 using namespace std;
 
@@ -18,8 +19,6 @@ const int ascii_z = 122;
 
 const string default_comp_nb = "1";
 
-const string space = " ";
-const string tab = "\t";
 const string invalid_sign = "^";
 
 const string invalid_signs_txt = "Invalid signs, changed to: ";

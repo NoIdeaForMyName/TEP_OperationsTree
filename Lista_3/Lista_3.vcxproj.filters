@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Error">
       <UniqueIdentifier>{dbff67a3-fb0d-44e3-bba9-512f07928ffc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ConstValues">
+      <UniqueIdentifier>{07d3ab2b-2ea4-4e99-a699-36606de2e7e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tree.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="Error.h">
       <Filter>Header Files\Error</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstValues.h">
+      <Filter>Header Files\ConstValues</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
