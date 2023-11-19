@@ -124,3 +124,5 @@ int main()
 // TODO: i do tej Variable, dodaj bool isActual i tam przechowuj inf. czy vector Variable jest aktualny
 
 //TEST CZY GIT DZIALA
+
+//zmianka!
