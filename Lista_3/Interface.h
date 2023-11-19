@@ -12,15 +12,14 @@ using namespace std;
 //const static int commandNb = 6;
 //const static string commands[commandNb] = { "enter", "vars", "print", "comp", "join", "exit" };
 
-enum commands
-{
-	enter = "enter",
-	vars = "vars",
-	print = "print",
-	comp = "comp",
-	join = "join",
-	EXIT = "exit"
-};
+
+const string ENTER = "enter";
+const string VARS = "vars";
+const string PRINT = "print";
+const string COMP = "comp";
+const string JOIN = "join";
+const string EXIT = "exit";
+
 
 const string start_info = "Commands:\n"
 						  "enter <formula>\n"

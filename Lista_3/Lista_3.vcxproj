@@ -130,8 +130,10 @@
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Tree.h" />
+    <ClCompile Include="Value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConstValues.h" />

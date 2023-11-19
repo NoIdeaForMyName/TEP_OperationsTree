@@ -26,37 +26,31 @@ bool Interface::processCommand(string cmd)
 	string cmd_name;
 	string cmd_rest;
 	split_cmd_name(cmd, cmd_name, cmd_rest);
-	switch (cmd_name)
-	{
-	case enter:
+
+	if (cmd_name == ENTER)
 		enter(cmd_rest);
-		break;
 
-	case vars:
+	else if (cmd_name == VARS)
 		vars();
-		break;
 
-	case print:
+	else if (cmd_name == PRINT)
 		print();
-		break;
 
-	case comp:
+	else if (cmd_name == COMP)
 		comp(cmd_rest);
-		break;
 
-	case join:
+	else if (cmd_name == JOIN)
 		join(cmd_rest);
-		break;
 
-	case EXIT:
+	else if (cmd_name == EXIT)
 		exit();
-		break;
 
-	default:
+	else
+	{
 		cout << invalid_cmd_txt << endl;
 		valid_command = false;
-		break;
 	}
+
 	return valid_command;
 }
 
