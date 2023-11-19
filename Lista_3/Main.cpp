@@ -122,3 +122,5 @@ int main()
 // TODO: (i tam przechowuj nazwe zmiennej var i jej wartosc liczbowa, a dla nie var, to inf. czym to jest
 // TODO: (operator, liczba))
 // TODO: i do tej Variable, dodaj bool isActual i tam przechowuj inf. czy vector Variable jest aktualny
+
+//TEST CZY GIT DZIALA
