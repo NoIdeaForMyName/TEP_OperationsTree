@@ -12,6 +12,7 @@ Tree::Tree(string input)
 	list<string> expression;
 	split_by_whitespace(expression, input);
 	root = new Node(expression, this);
+	if (expression.empty()) root->repair();
 	while (!expression.empty())
 	{
 		errors.addTooLongExpression(expression.front());
@@ -55,7 +56,7 @@ void Tree::operator=(const Tree& toCopy) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
 Tree Tree::operator+(const Tree& toAdd) const
 {
 	Tree outputTree(*this);
-	outputTree.joinWith(toAdd);
+	outputTree.joinWith(*(new Tree(toAdd)));
 	return outputTree;
 }
 
@@ -67,9 +68,12 @@ string Tree::print() const
 	return accumulator;
 }
 
-vector<Tree::Value*>* Tree::getVariables()
+vector<string> Tree::getVariables()
 {
-	return &variables;
+	vector<string> output;
+	for (int i = 0; i < variables.size(); i++)
+		output.push_back(variables[i]->value);
+	return output;
 }
 
 Error* Tree::getErrors()
@@ -82,12 +86,13 @@ void Tree::joinWith(const Tree& toJointTree)
 	errors.clear();
 	if (root->childrenNb == 0)
 	{
+		delete root;
 		root = toJointTree.root;
 	}
 	else
 		root->join(toJointTree.root);
-	for (int i = 0; i < toJointTree.variables.size(); i++)
-		variables.push_back(toJointTree.variables[i]);
+	//for (int i = 0; i < toJointTree.variables.size(); i++) // TODO MUSI BYC COPY
+		//variables.push_back(toJointTree.variables[i]);
 }
 
 void Tree::split_by_whitespace(list<string>& list, string txt)
@@ -199,7 +204,7 @@ Tree::Node::Node(list<string>& expr, Tree* tree)
 	{
 		val = new Value();
 		childrenNb = 0;
-		children = nullptr;
+		//children = nullptr;
 	}
 	else
 	{
@@ -220,17 +225,16 @@ Tree::Node::Node(list<string>& expr, Tree* tree)
 Tree::Node::~Node()
 {
 	for (int i = 0; i < childrenNb; i++)
-		delete children->at(i);
-	if (children != nullptr)
-		delete children;
+		delete children[i];
+	delete val;
 }
 
 void Tree::Node::createChildren(int nb, list<string>& expr)
 {
 	childrenNb = nb;
-	children = new vector<Node*>;
+	//children = new vector<Node*>;
 	for (int i = 0; i < nb; i++)
-		children->push_back(new Node(expr, tree));
+		children.push_back(new Node(expr, tree));
 }
 
 int Tree::Node::calculateChildrenNb(argumentType t)
@@ -248,18 +252,19 @@ void Tree::Node::repair()
 	if (val->value == "")
 	{
 		val->value = default_comp_nb;
+		val->valuatedVariable = default_comp_nb;
 		tree->errors.addTooShortExpressionError(default_comp_nb);
 	}
 	for (int i = 0; i < childrenNb; i++)
-		children->at(i)->repair();
+		children[i]->repair();
 }
 
 void Tree::Node::join(Node* toJoinNode)
 {
-	Node* lastChild = children->at(childrenNb - 1);
+	Node* lastChild = children[childrenNb - 1];
 	if (lastChild->childrenNb == 0)
 	{
-		children->at(childrenNb - 1) = toJoinNode;
+		children[childrenNb - 1] = toJoinNode;
 		delete lastChild;
 	}
 	else
@@ -270,5 +275,5 @@ void Tree::Node::print(string& acc)
 {
 	acc += val->value + space;
 	for (int i = 0; i < childrenNb; i++)
-		children->at(i)->print(acc);
+		children[i]->print(acc);
 }

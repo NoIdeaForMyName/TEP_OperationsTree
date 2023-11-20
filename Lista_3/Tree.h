@@ -71,7 +71,7 @@ class Tree
 
 		Value* val;
 		int childrenNb;
-		vector<Node*>* children;
+		vector<Node*> children;
 		Tree* tree;
 
 		void createChildren(int nb, list<string>& expr);
@@ -92,7 +92,7 @@ public:
 	Tree operator+(const Tree& toAdd) const;
 
 	string print() const;
-	vector<Value*>* getVariables();
+	vector<string> getVariables();
 	Error* getErrors();
 
 private:
