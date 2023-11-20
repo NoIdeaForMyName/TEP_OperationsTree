@@ -22,7 +22,7 @@ Tree::Tree(string input)
 
 Tree::Tree(const Tree& toCopyTree) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
 {
-	string input = toCopyTree.print();
+	string input = toCopyTree.print(false);
 	list<string> expression;
 	split_by_whitespace(expression, input);
 	root = new Node(expression, this);
@@ -44,7 +44,7 @@ void Tree::operator=(const Tree& toCopy) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
 	variables.clear();
 	errors.clear();
 	list<string> expression;
-	split_by_whitespace(expression, toCopy.print());
+	split_by_whitespace(expression, toCopy.print(false));
 	root = new Node(expression, this);
 	while (!expression.empty())
 	{
@@ -55,15 +55,19 @@ void Tree::operator=(const Tree& toCopy) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
 
 Tree Tree::operator+(const Tree& toAdd) const
 {
-	Tree outputTree(*this);
-	outputTree.joinWith(*(new Tree(toAdd)));
-	return outputTree;
+	string thisExpr = print(false);
+	while (thisExpr[thisExpr.size() - 1] != space_ch) thisExpr.pop_back();
+	thisExpr.pop_back();
+	string expression = thisExpr + space + toAdd.print(false);
+	//Tree outputTree(*this);
+	//outputTree.joinWith(*(new Tree(toAdd)));
+	return Tree(expression);
 }
 
-string Tree::print() const
+string Tree::print(bool isValuated) const
 {
 	string accumulator;
-	root->print(accumulator);
+	root->print(accumulator, isValuated);
 	accumulator.pop_back();
 	return accumulator;
 }
@@ -79,6 +83,18 @@ vector<string> Tree::getVariables()
 Error* Tree::getErrors()
 {
 	return &errors;
+}
+
+float Tree::compute(list<int> valuations)
+{
+	for (int i = 0; i < variables.size(); i++)
+	{
+		int valuation = valuations.front();
+		valuations.pop_front();
+		variables[i]->valuatedVariable = valuation;
+	}
+	//TODO COMPUTE
+	return 0.0;
 }
 
 void Tree::joinWith(const Tree& toJointTree)
@@ -271,9 +287,12 @@ void Tree::Node::join(Node* toJoinNode)
 		lastChild->join(toJoinNode);
 }
 
-void Tree::Node::print(string& acc)
+void Tree::Node::print(string& acc, bool isValuated)
 {
-	acc += val->value + space;
+	if (!isValuated)
+		acc += val->value + space;
+	else
+		acc += val->valuatedVariable + space;
 	for (int i = 0; i < childrenNb; i++)
-		children[i]->print(acc);
+		children[i]->print(acc, isValuated);
 }

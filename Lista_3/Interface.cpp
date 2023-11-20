@@ -14,7 +14,7 @@ void Interface::start()
 	while (!exit_interface)
 	{
 		cout << prompt_sign;
-		cin >> command;
+		getline(cin, command);
 		processCommand(command);
 	}
 	cout << exiting_txt << endl;
@@ -74,43 +74,140 @@ void Interface::split_cmd_name(const string& input, string& cmd_name, string& re
 
 void Interface::enter(const string& cmd)
 {
+	if (treeExists())
+		delete tree;
 	tree = new Tree(cmd);
+	Error* err = tree->getErrors();
+	if (!err->getInvalidVariables().empty())
+	{
+		cout << invalid_variable_name_txt << endl;
+		vector<tuple<string, string>> invalid_valid = err->getInvalidVariables();
+		for (int i = 0; i < invalid_valid.size(); i++)
+		{
+			cout << get<0>(invalid_valid[i]) << changed_to_txt << get<1>(invalid_valid[i]) << endl;
+		}
+	}
+	if (!err->getRestExpr().empty())
+	{
+		vector<string> restExpr = err->getRestExpr();
+		if (err->isTooShort())
+			cout << values_are_missing_txt;
+		else
+			cout << unnecessary_rest_txt;
+		for (int i = 0; i < restExpr.size(); i++) cout << restExpr[i] << space;
+		cout << endl << following_processed_info_txt << tree->print(false) << endl;
+	}
+
 }
 
 void Interface::vars()
 {
-	if (tree != nullptr)
+	if (!treeExists()) 
+		cout << no_tree_info_txt << endl;
+	else
 	{
-		
+		vector<string> vars = tree->getVariables();
+		set<string> usedVars;
+		for (int i = 0; i < vars.size(); i++)
+		{
+			string var = vars[i];
+			if (usedVars.count(var) == 0)
+			{
+				usedVars.insert(var);
+				cout << var << space;
+			}
+		}
+		cout << endl;
 	}
-	//TODO tree.getVars();
-	//i potem je wypisz...
+
 }
 
 void Interface::print()
 {
-	if (tree != nullptr)
+	if (!treeExists())
+		cout << no_tree_info_txt << endl;
+	else
 	{
-		//TODO tree.getExpression()
-		//i potem wypisz...
+		cout << tree->print(false) << endl;
 	}
-
 }
 
 void Interface::comp(const string& cmd)
 {
-	// TODO
+	if (!treeExists())
+		cout << no_tree_info_txt << endl;
+	else
+	{
+		list<int> valuations;
+		if (split_to_int_and_inf(valuations, cmd))
+		{
+			tree->compute(valuations); // TODO TODO TODO
+		}
+	}
 }
 
 void Interface::join(const string& cmd)
 {
-	if (tree != nullptr)
-		*tree = *tree + Tree(cmd);
-	else
-		tree = new Tree(cmd);
+	if (!treeExists())
+		cout << no_tree_info_txt << endl;
+
+	Tree copyTree = *tree;
+	enter(cmd);
+	*tree = copyTree + *tree;
+	//*tree = *tree + Tree(cmd);
 }
 
 void Interface::exit()
 {
 	exit_interface = true;
 }
+
+bool Interface::treeExists()
+{
+	return tree != nullptr;
+}
+
+bool Interface::split_to_int_and_inf(list<int>& list, string txt)
+{
+	string val;
+	bool wrongInput = false;
+	int lastIdx;
+	for (int i = 0; i < txt.size() && !wrongInput; i++)
+	{
+		if (txt[i] != space_ch)
+		{
+			val += txt[i];
+
+		}
+		else if (isInteger(val))
+		{
+			list.push_back(stoi(val));
+			val = "";
+		}
+		else
+		{
+			wrongInput = true;
+			lastIdx = i;
+		}
+	} if (!wrongInput && val != "") list.push_back(stoi(val));
+
+	if (wrongInput)
+	{
+		for (int i = 0; i < lastIdx; i++)
+		{
+			cout << space;
+		}
+		cout << invalid_sign << invalid_argument_txt;
+	}
+
+	return !wrongInput;
+}
+
+bool Interface::isInteger(string n)
+{
+	for (int i = 0; i < n.size(); i++)
+		if (n[i] < ascii_0 || n[i] > ascii_9) return false;
+	return true;
+}
+
+

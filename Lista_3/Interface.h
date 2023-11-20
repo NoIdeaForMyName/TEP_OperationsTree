@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Tree.h"
+#include "Error.h"
 #include "ConstValues.h"
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 #include <sstream>
 
 using namespace std;
@@ -32,7 +34,11 @@ const string start_info = "Commands:\n"
 const string prompt_sign = ">> ";
 //const string space = " ";
 const string invalid_cmd_txt = "Invalid command name!";
+const string invalid_argument_txt = "Invalid argument!";
+const string invalid_variable_name_txt = "Invalid variable name!";
 const string exiting_txt = "Exiting...";
+const string no_tree_info_txt = "Create tree first!";
+const string changed_to_txt = "->";
 
 class Interface
 {
@@ -52,4 +58,9 @@ private:
 	void comp(const string& cmd);
 	void join(const string& cmd);
 	void exit();
+
+	bool treeExists();
+
+	bool split_to_int_and_inf(list<int>& list, string txt);
+	bool isInteger(string n);
 };

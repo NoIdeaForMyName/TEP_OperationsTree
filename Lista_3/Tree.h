@@ -6,6 +6,7 @@
 #include <sstream>
 #include "ConstValues.h"
 #include "Error.h"
+//#include "Interface.h"
 
 using namespace std;
 
@@ -28,8 +29,8 @@ const string invalid_signs_txt = "Invalid signs, changed to: ";
 const string invalid_variable_txt = " - invalid variable, changed to: ";
 const string default_variable_name = "var";
 
-const string unnecessary_rest_txt = "Rest is unnecessary";
-const string values_are_missing_txt = "Values are missing";
+const string unnecessary_rest_txt = "Rest is unnecessary: ";
+const string values_are_missing_txt = "Values are missing: ";
 const string following_processed_info_txt = "The following expression will be processed: ";
 
 enum argumentType
@@ -79,7 +80,7 @@ class Tree
 
 		void repair();
 		void join(Node* toJoinNode);
-		void print(string& acc);
+		void print(string& acc, bool isValuated);
 	};
 
 
@@ -91,9 +92,10 @@ public:
 	void operator=(const Tree& toCopy);
 	Tree operator+(const Tree& toAdd) const;
 
-	string print() const;
+	string print(bool isValuated) const;
 	vector<string> getVariables();
 	Error* getErrors();
+	float compute(list<int> valuations);
 
 private:
 	Node* root;

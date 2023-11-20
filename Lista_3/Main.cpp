@@ -1,4 +1,5 @@
 #include "Tree.h"
+#include "Interface.h"
 #include <iostream>
 #include <sstream>
 #include<string>
@@ -27,7 +28,7 @@ void printVectorTuple(vector<tuple<T, T>> v)
 	cout << endl;
 }
 
-int main()
+int main2()
 {
 	string expression = "+ sin x! 2 s@@iema 44 2 + * 23 4 $$#x";
 	//string expression = "+ 2 5";
@@ -37,7 +38,7 @@ int main()
 
 
 	print("TREE: ");
-	print(tree1.print());
+	print(tree1.print(false));
 
 	vector<string> vars = tree1.getVariables();
 	print("VARIABLES: ");
@@ -52,4 +53,13 @@ int main()
 	print("\nINVALID VARIABLES: ");
 	printVectorTuple(error->getInvalidVariables());
 
+	return 0;
+}
+
+int main()
+{
+	Interface interface;
+	interface.start();
+
+	return 0;
 }
