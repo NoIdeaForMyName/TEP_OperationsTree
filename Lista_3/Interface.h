@@ -32,13 +32,25 @@ const string start_info = "Commands:\n"
 						  "exit\n";
 
 const string prompt_sign = ">> ";
-//const string space = " ";
+
 const string invalid_cmd_txt = "Invalid command name!";
-const string invalid_argument_txt = "Invalid argument!";
+const string invalid_argument_txt = "Invalid argument: ";
 const string invalid_variable_name_txt = "Invalid variable name!";
+const string wrong_nb_of_values_txt = "Wrong number of values!";
 const string exiting_txt = "Exiting...";
 const string no_tree_info_txt = "Create tree first!";
 const string changed_to_txt = "->";
+
+
+const string invalid_sign = "^";
+
+const string unnecessary_rest_txt = "Rest is unnecessary: ";
+const string values_are_missing_txt = "Values are missing: ";
+const string following_processed_info_txt = "The following expression will be processed: ";
+
+const string division_by_zero_exc_txt = "Division by zero!";
+
+const string wrong_implemented_txt = "Wrong implementation: ";
 
 class Interface
 {
@@ -61,6 +73,6 @@ private:
 
 	bool treeExists();
 
-	bool split_to_int_and_inf(list<int>& list, string txt);
+	bool split_to_int_and_inf(list<string>& list, string txt);
 	bool isInteger(string n);
 };

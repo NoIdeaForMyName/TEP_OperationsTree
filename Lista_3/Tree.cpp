@@ -20,7 +20,7 @@ Tree::Tree(string input)
 	}
 }
 
-Tree::Tree(const Tree& toCopyTree) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
+Tree::Tree(const Tree& toCopyTree)
 {
 	string input = toCopyTree.print(false);
 	list<string> expression;
@@ -38,7 +38,7 @@ Tree::~Tree()
 	delete root;
 }
 
-void Tree::operator=(const Tree& toCopy) // TODO MOZE POZNIEJ LEPIEJ TO ZROBISZ
+void Tree::operator=(const Tree& toCopy)
 {
 	delete root;
 	variables.clear();
@@ -75,8 +75,16 @@ string Tree::print(bool isValuated) const
 vector<string> Tree::getVariables()
 {
 	vector<string> output;
+	set<string> usedVars;
 	for (int i = 0; i < variables.size(); i++)
-		output.push_back(variables[i]->value);
+	{
+		string var = variables[i]->value;
+		if (usedVars.count(var) == 0)
+		{
+			usedVars.insert(var);
+			output.push_back(var);
+		}
+	}
 	return output;
 }
 
@@ -85,16 +93,29 @@ Error* Tree::getErrors()
 	return &errors;
 }
 
-float Tree::compute(list<int> valuations)
+float Tree::compute(list<string> valuations)
 {
-	for (int i = 0; i < variables.size(); i++)
+	//for (int i = 0; i < variables.size(); i++)
+	//{
+	//	string valuation = valuations.front();
+	//	valuations.pop_front();
+	//	variables[i]->valuatedVariable = valuation;
+	//}
+	vector<string> variablesNames = getVariables();
+	for (int i = 0; i < variablesNames.size(); i++)
 	{
-		int valuation = valuations.front();
+		string varName = variablesNames[i];
+		string valuation = valuations.front();
 		valuations.pop_front();
-		variables[i]->valuatedVariable = valuation;
+		for (int j = 0; j < variables.size(); j++)
+			if (variables[j]->value == varName)
+			{
+				variables[j]->valuatedVariable = valuation;
+
+			}
+
 	}
-	//TODO COMPUTE
-	return 0.0;
+	return root->compute();
 }
 
 void Tree::joinWith(const Tree& toJointTree)
@@ -249,8 +270,27 @@ void Tree::Node::createChildren(int nb, list<string>& expr)
 {
 	childrenNb = nb;
 	//children = new vector<Node*>;
-	for (int i = 0; i < nb; i++)
-		children.push_back(new Node(expr, tree));
+	if (val->value != addV2)
+		for (int i = 0; i < nb; i++)
+			children.push_back(new Node(expr, tree));
+	else
+	{
+		bool valid = true;
+		for (int i = 0; i < nb; i++)
+			children.push_back(new Node(expr, tree));
+		if (children[0]->val->type != number && children[0]->val->type != variable)
+			valid = false;
+		if (children[1]->val->type != operator_1arg && children[1]->val->type != operator_2arg)
+			valid = false;
+
+		if (!valid)
+		{
+			tree->errors.setWrongImplementation(addV2, add);
+			val->value = add;
+			val->valuatedVariable = add;
+		}
+	}
+
 }
 
 int Tree::Node::calculateChildrenNb(argumentType t)
@@ -296,3 +336,36 @@ void Tree::Node::print(string& acc, bool isValuated)
 	for (int i = 0; i < childrenNb; i++)
 		children[i]->print(acc, isValuated);
 }
+
+float Tree::Node::compute()
+{
+	if (childrenNb == 0)
+	{
+		return stof(val->valuatedVariable);
+	}
+
+	if (val->type == operator_2arg)
+	{
+		if (val->value == add || val->value == addV2)
+			return children[0]->compute() + children[1]->compute();
+		if (val->value == sub)
+			return children[0]->compute() - children[1]->compute();
+		if (val->value == mul)
+			return children[0]->compute() * children[1]->compute();
+		if (val->value == divi)
+			return children[0]->compute() / children[1]->compute();
+		//if (val->value == addV2)
+			//return 
+	}
+
+	else if (val->type == operator_1arg)
+	{
+		if (val->value == sinu)
+			return sin(children[0]->compute());
+		if (val->value == cosi)
+			return cos(children[0]->compute());
+	}
+
+	return 0; // somethings wrong if it is returned
+}
+

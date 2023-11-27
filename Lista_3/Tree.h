@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <set>
 #include <sstream>
 #include "ConstValues.h"
 #include "Error.h"
@@ -10,10 +11,20 @@
 
 using namespace std;
 
-const int operators_nb = 6;
+const int operators_nb = 7;
 const int operators_1_arg_nb = 2;
-const static string operators[operators_nb] = { "+", "-", "*", "/", "sin", "cos" };
+const static string operators[operators_nb] = { "+", "-", "*", "/", "sin", "cos", "++" };
 const static string operators_1_arg[operators_1_arg_nb] = { "sin", "cos" };
+const static string add = "+";
+const static string sub = "-";
+const static string mul = "*";
+const static string divi = "/";
+const static string sinu = "sin";
+const static string cosi = "cos";
+
+const static string addV2 = "++";
+
+
 const int ascii_0 = 48;
 const int ascii_9 = 57;
 const int ascii_A = 65;
@@ -22,23 +33,14 @@ const int ascii_a = 97;
 const int ascii_z = 122;
 
 const string default_comp_nb = "1";
-
-const string invalid_sign = "^";
-
-const string invalid_signs_txt = "Invalid signs, changed to: ";
-const string invalid_variable_txt = " - invalid variable, changed to: ";
 const string default_variable_name = "var";
-
-const string unnecessary_rest_txt = "Rest is unnecessary: ";
-const string values_are_missing_txt = "Values are missing: ";
-const string following_processed_info_txt = "The following expression will be processed: ";
 
 enum argumentType
 {
 	number,
 	variable,
 	operator_1arg,
-	operator_2arg
+	operator_2arg,
 };
 
 
@@ -81,6 +83,9 @@ class Tree
 		void repair();
 		void join(Node* toJoinNode);
 		void print(string& acc, bool isValuated);
+		float compute();
+
+		bool variablesContains(string val);
 	};
 
 
@@ -95,7 +100,7 @@ public:
 	string print(bool isValuated) const;
 	vector<string> getVariables();
 	Error* getErrors();
-	float compute(list<int> valuations);
+	float compute(list<string> valuations);
 
 private:
 	Node* root;

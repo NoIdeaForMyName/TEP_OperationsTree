@@ -17,10 +17,13 @@ public:
 	void clear();
 
 	bool isTooShort();
-	vector<string> getRestExpr();
-	vector<tuple<string, string>> getInvalidVariables();
+	vector<string>& getRestExpr();
+	vector<tuple<string, string>>& getInvalidVariables();
+	tuple<string, string>& isWrongImplemented();
+	void setWrongImplementation(string invalid, string valid);
 
 private:
+	tuple<string, string> wrong_implementation;
 	bool tooShort;
 	vector<string> restExpr;
 	vector<tuple<string, string>> invalidVariables;

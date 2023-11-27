@@ -78,6 +78,10 @@ void Interface::enter(const string& cmd)
 		delete tree;
 	tree = new Tree(cmd);
 	Error* err = tree->getErrors();
+	if (!get<0>(err->isWrongImplemented()).empty())
+	{
+		cout << wrong_implemented_txt << get<0>(err->isWrongImplemented()) << space << changed_to_txt << space << get<1>(err->isWrongImplemented()) << endl;
+	}
 	if (!err->getInvalidVariables().empty())
 	{
 		cout << invalid_variable_name_txt << endl;
@@ -107,7 +111,9 @@ void Interface::vars()
 	else
 	{
 		vector<string> vars = tree->getVariables();
-		set<string> usedVars;
+		for (int i = 0; i < vars.size(); i++)
+			cout << vars[i] << space;
+		/*set<string> usedVars;
 		for (int i = 0; i < vars.size(); i++)
 		{
 			string var = vars[i];
@@ -116,7 +122,7 @@ void Interface::vars()
 				usedVars.insert(var);
 				cout << var << space;
 			}
-		}
+		}*/
 		cout << endl;
 	}
 
@@ -138,10 +144,18 @@ void Interface::comp(const string& cmd)
 		cout << no_tree_info_txt << endl;
 	else
 	{
-		list<int> valuations;
+		list<string> valuations;
+		float result;
 		if (split_to_int_and_inf(valuations, cmd))
 		{
-			tree->compute(valuations); // TODO TODO TODO
+			if (valuations.size() == tree->getVariables().size())
+			{
+				result = tree->compute(valuations);
+				if (isinf(result)) throw runtime_error(division_by_zero_exc_txt);
+				cout << result << endl;
+			}
+			else
+				cout << wrong_nb_of_values_txt << endl;
 		}
 	}
 }
@@ -160,6 +174,8 @@ void Interface::join(const string& cmd)
 void Interface::exit()
 {
 	exit_interface = true;
+	if (tree != nullptr)
+		delete tree;
 }
 
 bool Interface::treeExists()
@@ -167,11 +183,11 @@ bool Interface::treeExists()
 	return tree != nullptr;
 }
 
-bool Interface::split_to_int_and_inf(list<int>& list, string txt)
+bool Interface::split_to_int_and_inf(list<string>& list, string txt)
 {
 	string val;
 	bool wrongInput = false;
-	int lastIdx;
+	//int lastIdx;
 	for (int i = 0; i < txt.size() && !wrongInput; i++)
 	{
 		if (txt[i] != space_ch)
@@ -181,23 +197,23 @@ bool Interface::split_to_int_and_inf(list<int>& list, string txt)
 		}
 		else if (isInteger(val))
 		{
-			list.push_back(stoi(val));
+			list.push_back(val);
 			val = "";
 		}
 		else
 		{
 			wrongInput = true;
-			lastIdx = i;
+			//lastIdx = i;
 		}
-	} if (!wrongInput && val != "") list.push_back(stoi(val));
+	} if (!wrongInput && val != "") list.push_back(val);
 
 	if (wrongInput)
 	{
-		for (int i = 0; i < lastIdx; i++)
+		/*for (int i = 0; i < lastIdx; i++)
 		{
 			cout << space;
-		}
-		cout << invalid_sign << invalid_argument_txt;
+		}*/
+		cout <<  invalid_argument_txt << val << endl;
 	}
 
 	return !wrongInput;

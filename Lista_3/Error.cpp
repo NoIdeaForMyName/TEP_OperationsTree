@@ -3,6 +3,7 @@
 
 Error::Error()
 	: tooShort(false)
+	, wrong_implementation("", "")
 {}
 
 
@@ -34,12 +35,24 @@ bool Error::isTooShort()
 	return tooShort;
 }
 
-vector<string> Error::getRestExpr()
+vector<string>& Error::getRestExpr()
 {
 	return restExpr;
 }
 
-vector<tuple<string, string>> Error::getInvalidVariables()
+vector<tuple<string, string>>& Error::getInvalidVariables()
 {
 	return invalidVariables;
 }
+
+tuple<string, string>& Error::isWrongImplemented()
+{
+	return wrong_implementation;
+}
+
+void Error::setWrongImplementation(string invalid, string valid)
+{
+	wrong_implementation = make_tuple(invalid, valid);
+}
+
+
